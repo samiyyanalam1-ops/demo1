@@ -6,8 +6,6 @@
     <title>Eid 2026 | Premium Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
     <style>
         :root {
             --primary: #6366f1;
@@ -23,7 +21,7 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
             padding: 0;
-            background: #0f172a; /* Full Dark Theme */
+            background: #0f172a; 
             color: #f1f5f9;
             overflow-x: hidden;
         }
@@ -79,7 +77,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- TICKET DESIGN (PREMIUM) --- */
+        /* --- TICKET DESIGN --- */
         .ticket-container {
             max-width: 450px;
             margin: 40px auto;
@@ -191,7 +189,7 @@
 
         .btn-glow:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5); }
 
-        /* --- LIVE TABLE DESIGN --- */
+        /* --- TABLE DESIGN --- */
         .table-wrap {
             max-width: 900px;
             margin: auto;
@@ -213,7 +211,6 @@
         input, select { width: 100%; padding: 15px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 15px; color: white; margin-bottom: 15px; outline: none; }
         .btn-confirm { width: 100%; background: var(--secondary); padding: 16px; border: none; border-radius: 15px; color: white; font-weight: 800; font-size: 1rem; cursor: pointer; }
 
-        /* MOBILE TABLE */
         @media (max-width: 768px) {
             thead { display: none; }
             td { display: flex; justify-content: space-between; text-align: right; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -271,7 +268,7 @@
     <section id="status" class="page-section">
         <div style="text-align: center; margin-bottom: 40px;">
             <h2 style="font-weight: 800; color: var(--primary);">Live Attendee Status</h2>
-            <div id="syncIndicator" style="font-size: 10-px; color: #64748b;">Syncing with Cloud Database...</div>
+            <div id="syncIndicator" style="font-size: 10px; color: #64748b;">Syncing with Cloud Database...</div>
         </div>
 
         <div class="table-wrap">
@@ -284,8 +281,7 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                    </tbody>
+                <tbody id="tableBody"></tbody>
             </table>
         </div>
     </section>
@@ -296,12 +292,6 @@
             <div id="formContainer">
                 <h3 style="margin: 0 0 20px; font-weight: 800; color: var(--primary);">Secure Checkout</h3>
                 
-                <div id="g_id_onload" 
-                    data-client_id="226374557186-7len193r31n170g4h2bdmfrar0832gcg.apps.googleusercontent.com" 
-                    data-callback="handleCredentialResponse">
-                </div>
-                <div class="g_id_signin" data-type="standard" style="margin-bottom: 15px;"></div>
-
                 <form id="bookingForm" action="https://formspree.io/f/mgoljooq" method="post">
                     <input type="text" id="name" name="name" placeholder="Full Name" required>
                     <input type="email" id="email" name="email" placeholder="Email" required>
@@ -333,7 +323,6 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbws1AGTZnbOK8_ldTlqlWc4VSgdS7q5zPooql-8vdVfOChy6eUTNiZOQ8Xqw2vgUzHtlA/exec";
 
-        // PAGE SWITCHER
         function showPage(id) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
@@ -341,7 +330,6 @@
             document.getElementById('nav-' + id).classList.add('active');
         }
 
-        // POPUP TOGGLE
         function togglePopup(show) {
             document.getElementById('bookingOverlay').style.display = show ? 'flex' : 'none';
             if(show) {
@@ -350,14 +338,8 @@
             }
         }
 
-        // GOOGLE SIGN IN
-        function handleCredentialResponse(response) {
-            const data = JSON.parse(atob(response.credential.split('.')[1]));
-            document.getElementById('name').value = data.name;
-            document.getElementById('email').value = data.email;
-        }
+        // handleCredentialResponse (Google Login logic) removed
 
-        // FORM SUBMIT
         document.getElementById('bookingForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -365,13 +347,12 @@
             btn.disabled = true;
             btn.innerText = "Processing...";
 
-            // Send to Formspree & Google Sheet
             fetch(this.action, { method: 'POST', body: formData, headers: {'Accept': 'application/json'} });
             fetch(SCRIPT_URL, { method: 'POST', body: formData })
             .then(() => {
                 document.getElementById('formContainer').style.display = 'none';
                 document.getElementById('successMsg').style.display = 'block';
-                loadTable(); // Update live table
+                loadTable(); 
             })
             .finally(() => {
                 btn.disabled = false;
@@ -379,7 +360,6 @@
             });
         };
 
-        // LOAD TABLE DATA
         async function loadTable() {
             try {
                 const res = await fetch(SCRIPT_URL);
@@ -400,9 +380,8 @@
             }
         }
 
-        // Initial Calls
         loadTable();
-        setInterval(loadTable, 15000); // 15s Auto-sync
+        setInterval(loadTable, 15000); 
     </script>
 </body>
 </html>
