@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eid Ticket | Booking & Live Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #818cf8;
+            --secondary: #27ae60;
+            --bg: #0b0f1a;
+            --card: rgba(30, 41, 59, 0.7);
+            --text: #f1f5f9;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0b0f1a);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 900px; margin: auto; }
+        header { text-align: center; padding: 20px 0; }
+        .logo { font-size: 2.2em; font-weight: 800; margin: 0; }
+        .red { color: #e74c3c; } .green { color: #27ae60; } .blue { color: #2980b9; }
+
+        /* --- SECTION STYLING --- */
+        .glass-card {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h3 { color: var(--primary); font-size: 1.1em; text-transform: uppercase; margin-top: 0; margin-bottom: 20px; letter-spacing: 1px; }
+
+        /* --- FORM STYLING --- */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select {
+            width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px;
+            border: 1px solid var(--border); background: rgba(15, 23, 42, 0.5);
+            color: white; outline: none; box-sizing: border-box; font-size: 1rem;
+        }
+        .btn-submit {
+            width: 100%; background: var(--secondary); color: white; border: none;
+            padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer;
+            transition: 0.3s; font-size: 1rem; text-transform: uppercase;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3); }
+
+        /* --- TABLE STYLING --- */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; }
+        th { 
+            background: rgba(15, 23, 42, 0.6); padding: 15px; text-align: left; 
+            font-size: 0.75rem; color: var(--primary); border-bottom: 1px solid var(--border);
+        }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+        .status-badge {
+            background: rgba(34, 197, 94, 0.15); color: #4ade80;
+            padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700;
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            thead { display: none; }
+            tr { display: block; border: 1px solid var(--border); border-radius: 15px; margin-bottom: 15px; padding: 10px; }
+            td { display: flex; justify-content: space-between; text-align: right; padding: 10px; border: none; word-break: break-all; }
+            td::before { content: attr(data-label); font-weight: 700; color: var(--primary); font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 class="logo"><span class="red">Book</span><span class="green">Eid</span><span class="blue">Ticket</span></h1>
+            <p style="color: #94a3b8; font-size: 0.9em; margin-top: 5px;">All-in-One Live Dashboard</p>
+        </header>
+
+        <section class="glass-card">
+            <h3><i class="fas fa-edit"></i> Registration Form</h3>
+            <form id="bookingForm" action="https://formspree.io/f/mgoljooq" method="POST">
+                <div class="form-row">
+                    <input type="text" id="name" name="name" placeholder="Full Name" required>
+                    <input type="email" id="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-row">
+                    <input type="tel" id="phone" name="phone" value="+8801" required>
+                    <select id="age" name="age" required>
+                        <option value="18-25">18-25 Years</option>
+                        <option value="26-35">26-35 Years</option>
+                        <option value="36-45">36-45 Years</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking</button>
+            </form>
+            <p id="successMsg" style="display:none; text-align:center; color:#4ade80; font-weight:bold; margin-top:15px;">Success! Data synced.</p>
+        </section>
+
+        <section class="glass-card">
+            <h3><i class="fas fa-list-ul"></i> Live Guest List</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="4" style="text-align:center;">Connecting to Google Sheets...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="syncTime" style="font-size: 0.6em; color: #64748b; margin-top: 15px; text-align: right;">Syncing...</p>
+        </section>
+    </div>
+
+    <script>
+        // YOUR DEPLOYED URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbws1AGTZnbOK8_ldTlqlWc4VSgdS7q5zPooql-8vdVfOChy6eUTNiZOQ8Xqw2vgUzHtlA/exec";
+
+        // 1. FORM SUBMISSION (Saves to Sheet & Formspree)
+        document.getElementById('bookingForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('successMsg');
+            const formData = new FormData(this);
+            
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+
+            // Send to Formspree (Email)
+            fetch(this.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+
+            // Send to Google Sheets (Database)
+            fetch(SCRIPT_URL, { method: 'POST', body: formData })
+            .then(() => {
+                msg.style.display = 'block';
+                this.reset();
+                setTimeout(loadTable, 2000); // Reload table after 2s
+            })
+            .finally(() => { 
+                btn.disabled = false;
+                btn.innerText = "Confirm Booking"; 
+            });
+        };
+
+        // 2. LIVE TABLE FETCH (Reads from Sheet)
+        async function loadTable() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                const tableBody = document.getElementById('tableBody');
+                
+                tableBody.innerHTML = data.map(user => `
+                    <tr>
+                        <td data-label="Name">${user.name}</td>
+                        <td data-label="Age">${user.age}</td>
+                        <td data-label="Email">${user.email}</td>
+                        <td data-label="Status"><span class="status-badge">Booked</span></td>
+                    </tr>
+                `).join('');
+                document.getElementById('syncTime').innerText = "Last Sync: " + new Date().toLocaleTimeString();
+            } catch (e) { console.log("Sync error"); }
+        }
+
+        // Run on start and then every 15s
+        loadTable();
+        setInterval(loadTable, 15000);
+    </script>
+</body>
+</html>
